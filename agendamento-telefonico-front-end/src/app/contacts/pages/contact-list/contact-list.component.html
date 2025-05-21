@@ -1,0 +1,74 @@
+<div class="container mt-5">
+  <h1 class="mb-4" id="title">Seus contatos:</h1>
+  <input
+    type="text"
+    class="form-control mb-4"
+    placeholder="Pesquise um contato..."
+    [(ngModel)]="searchQuery"
+    (ngModelChange)="loadContatos()"
+  />
+
+  <table class="table table-hover">
+    <thead>
+      <tr id="header">
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Celular</th>
+        <th>Criado em.</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(contact of contatos; let i = $index; track i){
+      <tr id="contactItem align-middle">
+        <td class="contactData align-middle">
+          {{ contact.contatoNome }}
+        </td>
+        <td class="contactData align-middle">{{ contact.contatoEmail }}</td>
+        <td class="contactData align-middle">{{ contact.contatoCelular }}</td>
+        <td class="contactData align-middle">
+          {{ contact.contatoDhCad | date : "dd/MM/yyyy HH:mm" }}
+        </td>
+        <td class="">
+          <button
+            routerLink="/contato/{{ contact.contatoId }}"
+            class="btn btn-primary"
+          >
+            Editar
+          </button>
+          <button
+            (click)="inativarContato(contact.contatoId)"
+            title="Inativar"
+            style="margin: 0px 10px"
+            [ngClass]="{ disabled: !contact.contatoSnAtivo }"
+            class="btn btn-danger"
+          >
+            <span class="material-icons">power off</span>
+          </button>
+          <button
+            title="Favoritar"
+            class="btn btn-warning"
+            (click)="favoritarContato(contact.contatoId)"
+          >
+            <span class="material-icons">
+              @if (contact.contatoSnFavorito) { favorite }@else{ favorite_border
+              }
+            </span>
+          </button>
+        </td>
+      </tr>
+      } @empty {
+      <td
+        colspan="5"
+        class="align-middle container bg-secondary-subtle mt-2 p-2 w-100 rounded-bottom-2"
+      >
+        <p class="mb-0 bg-transparent">Nenhum contato cadastrado</p>
+      </td>
+      }
+    </tbody>
+  </table>
+
+  <button class="btn btn-primary btn-success" routerLink="/contato">
+    Adicionar contato
+  </button>
+</div>

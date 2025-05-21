@@ -1,0 +1,84 @@
+<div class="container mt-5">
+  <div class="container-fluid border rounded p-4 w-50">
+    @if (contatoId()) {
+    <h1>Edite seu contato</h1>
+    } @else {
+    <h1>Cadastre seu contato</h1>
+    }
+
+    <form
+      [formGroup]="ContatoForm"
+      (ngSubmit)="saveContact()"
+      class="mb-4 d-flex flex-column gap-4"
+    >
+      <div class="form-group">
+        <label>Nome</label>
+        <input
+          [ngClass]="{ 'is-invalid': getValidationMessage('contatoNome') }"
+          formControlName="contatoNome"
+          type="text"
+          class="form-control"
+        />
+        @if(getValidationMessage('contatoNome')){
+        <div class="container bg-danger-subtle rounded">
+          <span>{{ getValidationMessage("contatoNome") }}</span>
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input
+          [ngClass]="{ 'is-invalid': getValidationMessage('contatoEmail') }"
+          formControlName="contatoEmail"
+          type="text"
+          class="form-control"
+        />
+        @if(getValidationMessage('contatoEmail')){
+        <div class="container bg-danger-subtle rounded">
+          <span>{{ getValidationMessage("contatoEmail") }}</span>
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Telefone</label>
+        <input
+          [ngClass]="{ 'is-invalid': getValidationMessage('contatoTelefone') }"
+          formControlName="contatoTelefone"
+          type="text"
+          class="form-control"
+        />
+        @if(getValidationMessage('contatoTelefone')){
+        <div class="container bg-danger-subtle rounded">
+          <span>{{ getValidationMessage("contatoTelefone") }}</span>
+        </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Celular</label>
+        <input
+          [ngClass]="{ 'is-invalid': getValidationMessage('contatoCelular') }"
+          formControlName="contatoCelular"
+          type="text"
+          class="form-control"
+        />
+        @if(getValidationMessage('contatoCelular')){
+        <div class="container bg-danger-subtle rounded">
+          <span>{{ getValidationMessage("contatoCelular") }}</span>
+        </div>
+        }
+      </div>
+
+      <button
+        class="btn btn-primary btn-success"
+        [disabled]="!ContatoForm.valid"
+        type="submit"
+      >
+        @if(contatoId()) { Editar } @else { Salvar }
+      </button>
+    </form>
+    <button routerLink="/.." class="btn btn-primary">Voltar</button>
+  </div>
+</div>
