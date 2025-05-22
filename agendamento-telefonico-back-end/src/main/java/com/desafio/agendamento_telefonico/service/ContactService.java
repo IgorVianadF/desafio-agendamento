@@ -1,89 +1,72 @@
 package com.desafio.agendamento_telefonico.service;
 
-import com.desafio.agendamento_telefonico.DTO.request.ContactRegisterRequestDTO;
+import com.desafio.agendamento_telefonico.dto.contact.ContactDTO;
+import com.desafio.agendamento_telefonico.dto.contact.SimpleContactDTO;
 import com.desafio.agendamento_telefonico.entity.Contact;
+import com.desafio.agendamento_telefonico.exceptions.ContactNotFoundException;
 import com.desafio.agendamento_telefonico.repository.ContactRepository;
+import com.desafio.agendamento_telefonico.validation.ContactValidation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.desafio.agendamento_telefonico.mapper.Mapper.getContact;
-import static com.desafio.agendamento_telefonico.mapper.Mapper.getCreationContact;
+import static com.desafio.agendamento_telefonico.mapper.ContactMapper.*;
 
 
 @Service
 public class ContactService {
-
     @Autowired
     ContactRepository contactRepository;
 
-    public List<Contact> getAllContacts(){
-     return contactRepository.findAll();
+    @Autowired
+    ContactValidation contactValidation;
+
+    public List<ContactDTO> getAllContacts(){
+     List<Contact> contactList = contactRepository.findAll();
+     List<ContactDTO> contactDtoList = new ArrayList<>(){
+     };
+     for(Contact contact : contactList){
+          contactDtoList.add(toContactDto(contact));
+     }
+        return contactDtoList;
     }
 
-    public Contact getContactById(int id){
-        return contactRepository.findById(id).orElse(null);
+    public ContactDTO getContactById(Long id){
+        Contact contact = contactRepository.findById(id).orElseThrow(()-> new ContactNotFoundException("Contato não encontrado"));
+        return toContactDto(contact);
     }
 
-    public ResponseEntity<?> favoriteContact(int id){
-        try{
-            Contact contato = contactRepository.findById(id).orElse(null);
-            if(contato!=null){
-                contato.setContatoSnFavorito(contato.getContatoSnFavorito()=='s'?'n':'s');
-                contactRepository.save(contato);
-                return ResponseEntity.status(HttpStatus.OK).build();
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    public ResponseEntity<?> inactivateContact(int id){
-        try{
-            Contact contato = contactRepository.findById(id).orElse(null);
-            if(contato!=null){
-                contato.setContatoSnAtivo(contato.getContatoSnAtivo()=='s'?'n':'s');
-                contactRepository.save(contato);
-                return ResponseEntity.status(HttpStatus.OK).build();
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    public ResponseEntity<?> updateContact(int id, ContactRegisterRequestDTO updatedContact){
-        try {
-        boolean exists = contactRepository.existsById(id);
-        if(exists){
-            Contact contact = getContact(id, updatedContact);
+    public SimpleContactDTO favoriteContact(Long id) {
+        Contact contact = contactRepository.findById(id).orElseThrow(()->new ContactNotFoundException("Contato não encontrado"));
+            contact.setContatoSnFavorito(contact.getContatoSnFavorito() == 's' ? 'n' : 's');
             contactRepository.save(contact);
-            return ResponseEntity.status(HttpStatus.OK).build();
-            }
-        }catch (DataIntegrityViolationException e){
-            if (e.getMessage() != null && e.getMessage().contains("unique_contato_celular")) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return toSimpleContactDto(contact);
     }
 
-    public ResponseEntity<?> createContact(ContactRegisterRequestDTO newContact){
-        Contact contact = getCreationContact(newContact);
-        try {
-            contactRepository.save(contact);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (Exception error){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+    public SimpleContactDTO inactivateContact(Long id){
+            Contact contact = contactRepository.findById(id).orElseThrow(()-> new ContactNotFoundException("Contato não encontrado"));
+                contact.setContatoSnAtivo(contact.getContatoSnAtivo()=='s'?'n':'s');
+                contactRepository.save(contact);
+                return toSimpleContactDto(contact);
     }
 
+    public SimpleContactDTO updateContact(Long id, SimpleContactDTO updatedContact) {
+        Contact contact = toContact(id, updatedContact);
+        contactValidation.celularAlreadyExists(contact, true);
+        contactRepository.save(contact);
+        return toSimpleContactDto(contact);
+    }
+
+    public SimpleContactDTO createContact(SimpleContactDTO newContact){
+        Contact contact = toContactWithoutId(newContact);
+        contactValidation.celularAlreadyExists(contact, false);
+        contactRepository.save(contact);
+        return toSimpleContactDto(contact);
+    }
+
+    public void deleteContact(Long id){
+        contactRepository.deleteById(id);
+    }
 }

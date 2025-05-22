@@ -1,74 +1,141 @@
-<div class="container mt-5">
-  <h1 class="mb-4" id="title">Seus contatos:</h1>
-  <input
-    type="text"
-    class="form-control mb-4"
-    placeholder="Pesquise um contato..."
-    [(ngModel)]="searchQuery"
-    (ngModelChange)="loadContatos()"
-  />
+<div
+  [ngClass]="{ border: !isScreenSmall() }"
+  class="container w-75 rounded py-4 my-4"
+>
+  <h1 class="mb-3 fs-2" id="title">Seus contatos</h1>
 
-  <table class="table table-hover">
-    <thead>
-      <tr id="header">
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Celular</th>
-        <th>Criado em.</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for(contact of contatos; let i = $index; track i){
-      <tr id="contactItem align-middle">
-        <td class="contactData align-middle">
-          {{ contact.contatoNome }}
-        </td>
-        <td class="contactData align-middle">{{ contact.contatoEmail }}</td>
-        <td class="contactData align-middle">{{ contact.contatoCelular }}</td>
-        <td class="contactData align-middle">
-          {{ contact.contatoDhCad | date : "dd/MM/yyyy HH:mm" }}
-        </td>
-        <td class="">
-          <button
-            routerLink="/contato/{{ contact.contatoId }}"
-            class="btn btn-primary"
-          >
-            Editar
-          </button>
-          <button
-            (click)="inativarContato(contact.contatoId)"
-            title="Inativar"
-            style="margin: 0px 10px"
-            [ngClass]="{ disabled: !contact.contatoSnAtivo }"
-            class="btn btn-danger"
-          >
-            <span class="material-icons">power off</span>
-          </button>
-          <button
-            title="Favoritar"
-            class="btn btn-warning"
-            (click)="favoritarContato(contact.contatoId)"
-          >
-            <span class="material-icons">
-              @if (contact.contatoSnFavorito) { favorite }@else{ favorite_border
-              }
-            </span>
-          </button>
-        </td>
-      </tr>
-      } @empty {
-      <td
-        colspan="5"
-        class="align-middle container bg-secondary-subtle mt-2 p-2 w-100 rounded-bottom-2"
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <input
+      type="text"
+      class="form-control w-75"
+      placeholder="Pesquise um contato..."
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="loadContatos()"
+    />
+    <button class="btn btn-success" routerLink="/contato">
+      @if (isScreenSmall()) {
+      <span class="material-icons">add</span>
+      } @else { Adicionar contato }
+    </button>
+  </div>
+  <div class="fluid-container">
+    @for(contact of contatos; let i = $index; track i) {
+    <div class="card mb-3 shadow-sm">
+      <div
+        [ngClass]="contact.contatoSnAtivo ? '' : 'bg-body-secondary'"
+        class="card-body d-flex flex-column gap-2"
       >
-        <p class="mb-0 bg-transparent">Nenhum contato cadastrado</p>
-      </td>
-      }
-    </tbody>
-  </table>
+        <div class="d-flex justify-content-between">
+          <h5 [ngClass]="{ 'fs-5': !isScreenSmall() }" class="card-title mb-1">
+            {{ contact.contatoNome }}
+          </h5>
+          @if (contact.contatoSnFavorito) {
+          <span class="material-icons text-warning">star</span>
+          }
+          <button
+            (click)="deletarContato(contact.contatoId)"
+            [ngClass]="
+              contact.contatoSnAtivo ? 'btn-light' : 'bg-body-secondary'
+            "
+            class="btn"
+          >
+            <span class="material-icons text-danger">delete</span>
+          </button>
+        </div>
 
-  <button class="btn btn-primary btn-success" routerLink="/contato">
-    Adicionar contato
-  </button>
+        <div class="d-md-flex card-text gap-4">
+          <div
+            [ngClass]="{ 'fs-6': !isScreenSmall() }"
+            class="d-flex align-items-center mb-1"
+          >
+            <div class="me-1 text-muted">E-mail</div>
+            <div class="d-flex align-items-end">
+              <span
+                class="material-icons me-2 text-muted"
+                style="font-size: 1rem"
+                >email</span
+              >
+              <div>{{ contact.contatoEmail }}</div>
+            </div>
+          </div>
+          <div
+            [ngClass]="{ 'fs-6': !isScreenSmall() }"
+            class="d-flex align-items-center mb-1"
+          >
+            <div class="d-flex align-items-end">
+              <div class="text-muted">Celular</div>
+              <span
+                class="material-icons me-2 text-muted"
+                style="font-size: 1rem"
+                >phone_android</span
+              >
+            </div>
+            <div>
+              {{ contact.contatoCelular }}
+            </div>
+          </div>
+          <div
+            [ngClass]="{ 'fs-6': !isScreenSmall() }"
+            class="d-flex align-items-center mb-1"
+          >
+            <div class="d-flex align-items-end">
+              <div class="me-1 text-muted">Telefone</div>
+              <span
+                class="material-icons me-2 text-muted"
+                style="font-size: 1rem"
+                >phone</span
+              >
+            </div>
+            <div>
+              {{ contact.contatoTelefone }}
+            </div>
+          </div>
+        </div>
+
+        <div
+          [ngClass]="{ 'fs-6': !isScreenSmall() }"
+          class="d-flex justify-content-between align-items-center"
+        >
+          <div class="text-muted">
+            Criado em: {{ contact.contatoDhCad | date : "dd/MM/yyyy" }}
+          </div>
+
+          <div class="btn-group btn-group-lg">
+            <button
+              routerLink="/contato/{{ contact.contatoId }}"
+              class="btn btn-lg btn-outline-primary d-flex align-items-center"
+              title="Editar"
+              [disabled]="!contact.contatoSnAtivo"
+            >
+              <span class="material-icons" style="font-size: 1.2rem">edit</span>
+            </button>
+            <button
+              (click)="inativarContato(contact.contatoId)"
+              class="btn btn-lg btn-outline-danger d-flex align-items-center"
+              title="Inativar"
+              [disabled]="!contact.contatoSnAtivo"
+            >
+              <span class="material-icons" style="font-size: 1.2rem"
+                >power_off</span
+              >
+            </button>
+            <button
+              (click)="favoritarContato(contact.contatoId)"
+              [disabled]="!contact.contatoSnAtivo"
+              class="btn btn-lg btn-outline-warning d-flex align-items-center"
+              title="Favoritar"
+            >
+              <span class="material-icons" style="font-size: 1.2rem">
+                @if (contact.contatoSnFavorito) { favorite } @else {
+                favorite_border }
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    } @empty {
+    <div class="alert alert-info">Nenhum contato cadastrado</div>
+    }
+  </div>
 </div>

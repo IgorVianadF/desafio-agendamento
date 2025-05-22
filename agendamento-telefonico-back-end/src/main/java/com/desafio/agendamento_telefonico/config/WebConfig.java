@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
         System.out.println(frontLink);
         registry.addMapping("/api/contacts/**")
                 .allowedOrigins(frontLink)
-                .allowedMethods("GET","PUT","POST","PATCH","OPTIONS")
+                .allowedMethods("GET","PUT","POST","PATCH","DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

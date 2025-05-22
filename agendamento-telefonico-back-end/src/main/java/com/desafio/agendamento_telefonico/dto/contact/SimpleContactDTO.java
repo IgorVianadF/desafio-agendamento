@@ -1,6 +1,6 @@
-package com.desafio.agendamento_telefonico.DTO.request;
+package com.desafio.agendamento_telefonico.dto.contact;
 
-public record ContactRegisterRequestDTO(
+public record SimpleContactDTO(
         String contatoNome,
         String contatoEmail,
         String contatoCelular,

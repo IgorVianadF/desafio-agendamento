@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Contato, ContatoApi } from '../consts/types';
 
@@ -36,7 +36,7 @@ export class ContactService {
   getById(id: number): Observable<Contato> {
     return this.http
       .get<ContatoApi>(`${this.apiUrl}/${id}`, { withCredentials: true })
-      .pipe(map(this.fromApi), shareReplay(1));
+      .pipe(map(this.fromApi));
   }
 
   create(contato: Contato): Observable<Contato> {
@@ -67,5 +67,11 @@ export class ContactService {
       {},
       { withCredentials: true }
     );
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
+      withCredentials: true,
+    });
   }
 }

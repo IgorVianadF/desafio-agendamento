@@ -20,6 +20,7 @@ import { AppToastService } from '../../../app-toast-service/service/app-toast.se
 export class ContactFormComponent {
   contatoId = signal<number | null>(null);
   private edit = signal(false);
+  small = screen.width < 768;
 
   constructor(
     private route: ActivatedRoute,
@@ -34,10 +35,12 @@ export class ContactFormComponent {
     contatoTelefone: new FormControl('', [
       Validators.required,
       Validators.maxLength(10),
+      Validators.minLength(10),
     ]),
     contatoCelular: new FormControl('', [
       Validators.required,
       Validators.maxLength(11),
+      Validators.minLength(11),
     ]),
     contatoSnAtivo: new FormControl('s'),
   });
@@ -57,7 +60,6 @@ export class ContactFormComponent {
   }
   saveContact(): void {
     if (this.ContatoForm.invalid) {
-      this.ContatoForm.markAllAsTouched();
       this.toastService.show('Algo errado', 'Preencha todos os campos');
       return;
     }
@@ -89,6 +91,7 @@ export class ContactFormComponent {
         });
       return;
     }
+
     this.contactService.create(newContact).subscribe({
       next: () => {},
       error: (error) => {

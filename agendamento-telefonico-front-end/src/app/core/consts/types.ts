@@ -4,9 +4,9 @@ export interface ContatoApi {
   contatoNome: string;
   contatoCelular: string;
   contatoTelefone: string;
-  contatoData?: Date;
-  contatoSnFavorito?: 's' | 'n';
+  contatoSnFavorito: 's' | 'n';
   contatoSnAtivo?: 's' | 'n';
+  contatoData?: Date;
 }
 
 export interface Contato {
@@ -15,7 +15,7 @@ export interface Contato {
   contatoNome: string;
   contatoCelular: string;
   contatoTelefone: string;
-  contatoSnFavorito?: boolean;
+  contatoSnFavorito: boolean;
   contatoSnAtivo?: boolean;
   contatoDhCad?: Date;
 }

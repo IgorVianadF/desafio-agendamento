@@ -18,7 +18,7 @@ public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contato_id")
-    private Integer contatoId;
+    private Long contatoId;
 
     @Column(name = "contato_nome", length = 100, nullable = false)
     private String contatoNome;
@@ -40,7 +40,7 @@ public class Contact {
 
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @Column(name = "contato_dh_cad")
+    @Column(name = "contato_dh_cad", updatable = false)
     private LocalDateTime contatoDhCad;
 }
 

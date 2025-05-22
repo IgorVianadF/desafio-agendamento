@@ -1,11 +1,13 @@
-<div class="container mt-5">
-  <div class="container-fluid border rounded p-4 w-50">
+<div class="container-fluid mt-5">
+  <div
+    [ngClass]="small ? 'w-100' : 'w-50'"
+    class="container-fluid border rounded p-4"
+  >
     @if (contatoId()) {
-    <h1>Edite seu contato</h1>
+    <h1 class="mb-3 fs-2">Edite seu contato</h1>
     } @else {
-    <h1>Cadastre seu contato</h1>
+    <h1 class="mb-3 fs-2">Cadastre seu contato</h1>
     }
-
     <form
       [formGroup]="ContatoForm"
       (ngSubmit)="saveContact()"
@@ -72,7 +74,7 @@
       </div>
 
       <button
-        class="btn btn-primary btn-success"
+        class="container btn btn-primary btn-success w-75"
         [disabled]="!ContatoForm.valid"
         type="submit"
       >

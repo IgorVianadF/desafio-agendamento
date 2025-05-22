@@ -1,7 +1,7 @@
 package com.desafio.agendamento_telefonico.controller;
 
-import com.desafio.agendamento_telefonico.DTO.request.ContactRegisterRequestDTO;
-import com.desafio.agendamento_telefonico.entity.Contact;
+import com.desafio.agendamento_telefonico.dto.contact.ContactDTO;
+import com.desafio.agendamento_telefonico.dto.contact.SimpleContactDTO;
 import com.desafio.agendamento_telefonico.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,32 +16,38 @@ public class ContactController {
     ContactService contactService;
 
     @GetMapping
-    public List<Contact> getAll(){
-        return contactService.getAllContacts();
+    public ResponseEntity<List<ContactDTO>> getAll(){
+        return ResponseEntity.ok(contactService.getAllContacts());
     }
 
     @PostMapping
-    public ResponseEntity<?> saveContact(@RequestBody ContactRegisterRequestDTO newContact){
-        return contactService.createContact(newContact);
+    public ResponseEntity<SimpleContactDTO> createContact(@RequestBody SimpleContactDTO newContact){
+        return ResponseEntity.ok(contactService.createContact(newContact));
     }
 
     @GetMapping("/{id}")
-    public Contact getContact(@PathVariable int id){
+    public ContactDTO getContact(@PathVariable Long id){
         return contactService.getContactById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateContact(@PathVariable int id, @RequestBody ContactRegisterRequestDTO updatedContact){
-        return contactService.updateContact(id, updatedContact);
+    public ResponseEntity<SimpleContactDTO> updateContact(@PathVariable Long id, @RequestBody SimpleContactDTO updatedContact){
+        return ResponseEntity.ok(contactService.updateContact(id, updatedContact));
     }
 
     @PatchMapping("/{id}/favoritar")
-    public ResponseEntity<?> favoriteContact(@PathVariable int id){
+    public SimpleContactDTO favoriteContact(@PathVariable Long id){
         return contactService.favoriteContact(id);
     }
 
     @PatchMapping("/{id}/inativar")
-    public ResponseEntity<?> inactivateContact(@PathVariable int id){
-        return contactService.inactivateContact(id);
+    public ResponseEntity<SimpleContactDTO> inactivateContact(@PathVariable Long id){
+        return ResponseEntity.ok(contactService.inactivateContact(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteContact(@PathVariable Long id){
+        contactService.deleteContact(id);
+        return ResponseEntity.noContent().build();
     }
 }
