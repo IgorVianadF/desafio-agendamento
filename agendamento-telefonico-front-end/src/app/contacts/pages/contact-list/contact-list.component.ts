@@ -15,6 +15,7 @@ export class ContactListComponent {
   isScreenSmall() {
     return window.innerWidth < 768;
   }
+
   contatos: Contato[] = [];
   searchQuery: string = '';
 
@@ -26,15 +27,7 @@ export class ContactListComponent {
 
   loadContatos(): void {
     this.contactService.getAll().subscribe((data) => {
-      this.contatos = data
-        .filter((c) =>
-          c.contatoNome.toLowerCase().includes(this.searchQuery.toLowerCase())
-        )
-        .sort((a, b) => (a.contatoId ?? 0) - (b.contatoId ?? 0))
-        .sort(
-          (a, b) => Number(b.contatoSnFavorito) - Number(a.contatoSnFavorito)
-        )
-        .sort((a, b) => Number(b.contatoSnAtivo) - Number(a.contatoSnAtivo));
+      this.contatos = this.filterData(data);
     });
   }
 
@@ -54,5 +47,30 @@ export class ContactListComponent {
     this.contactService.delete(id as number).subscribe(() => {
       this.loadContatos();
     });
+  }
+
+  filterData(data: Contato[]): Contato[] {
+    return data
+      .filter((c) =>
+        c.contatoNome
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .includes(
+            this.searchQuery
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+          )
+      )
+      .sort((a, b) => {
+        if (Number(b.contatoSnAtivo) !== Number(a.contatoSnAtivo)) {
+          return Number(b.contatoSnAtivo) - Number(a.contatoSnAtivo);
+        }
+        if (Number(b.contatoSnFavorito) !== Number(a.contatoSnFavorito)) {
+          return Number(b.contatoSnFavorito) - Number(a.contatoSnFavorito);
+        }
+        return (a.contatoId ?? 0) - (b.contatoId ?? 0);
+      });
   }
 }

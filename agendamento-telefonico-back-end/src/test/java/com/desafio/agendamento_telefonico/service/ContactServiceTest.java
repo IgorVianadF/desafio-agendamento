@@ -125,7 +125,33 @@ class ContactServiceTest {
 
     @Test
     void updateContact() {
+        SimpleContactDTO updatedContactDTO = new SimpleContactDTO(
+                "Novo Nome",
+                "novoemail@dominio.com",
+                "1199998888",
+                "1122334455",
+                's',
+                'n'
+        );
 
+        Contact updatedContact = new Contact();
+        updatedContact.setContatoId(1L);
+        updatedContact.setContatoNome("Novo Nome");
+        updatedContact.setContatoEmail("novoemail@dominio.com");
+        updatedContact.setContatoCelular("1199998888");
+        updatedContact.setContatoTelefone("1122334455");
+        updatedContact.setContatoSnFavorito('s');
+        updatedContact.setContatoSnAtivo('n');
+
+        when(contactRepository.save(any(Contact.class))).thenReturn(updatedContact);
+        doNothing().when(contactValidation).celularAlreadyExists(any(Contact.class), eq(true));
+
+        SimpleContactDTO result = contactService.updateContact(1L, updatedContactDTO);
+
+        assertEquals("Novo Nome", result.contatoNome());
+        assertEquals("novoemail@dominio.com", result.contatoEmail());
+        assertEquals("1199998888", result.contatoCelular());
+        assertEquals("1122334455", result.contatoTelefone());
     }
 
     @Test
@@ -136,7 +162,7 @@ class ContactServiceTest {
         assertNotNull(result);
         assertEquals("Igor Viana", result.contatoNome());
         assertEquals("81982957722", result.contatoCelular());
-        verify(contactRepository, times(1)).save(any(Contact.class));
         verify(contactValidation, times(1)).celularAlreadyExists(any(Contact.class), anyBoolean());
+        verify(contactRepository, times(1)).save(any(Contact.class));
     }
 }

@@ -29,7 +29,7 @@ public class Contact {
     @Column(name = "contato_celular", length = 11, unique = true, nullable = false)
     private String contatoCelular;
 
-    @Column(name = "contato_telefone", length = 10)
+    @Column(name = "contato_telefone", length = 10, nullable = false)
     private String contatoTelefone;
 
     @Column(name = "contato_sn_favorito", columnDefinition = "char(1)")

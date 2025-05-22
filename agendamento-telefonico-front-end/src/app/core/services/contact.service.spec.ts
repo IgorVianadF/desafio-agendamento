@@ -14,6 +14,7 @@ describe('ContactService', () => {
   let httpClient: HttpClient;
 
   const mockApiUrl = 'http://localhost:8080/api/contacts';
+
   const mockContatoApi: ContatoApi = {
     contatoId: 1,
     contatoNome: 'Igor Viana',
@@ -23,6 +24,7 @@ describe('ContactService', () => {
     contatoSnFavorito: 'n',
     contatoSnAtivo: 's',
   };
+
   const mockContato: Contato = {
     contatoId: 1,
     contatoNome: 'Igor Viana',
@@ -132,7 +134,7 @@ describe('ContactService', () => {
   });
 
   describe('create', () => {
-    it('Realiza requisição POST com contato convertido em contatoApi', () => {
+    it('Realiza requisição POST e cria um contato', () => {
       service.create(mockContato).subscribe((contact) => {
         expect(contact).toEqual(mockContato);
       });
@@ -145,9 +147,8 @@ describe('ContactService', () => {
     });
   });
 
-  //----------------------------------------------------------------------------------------------
   describe('update', () => {
-    it('should send PUT request with converted data', () => {
+    it('Realiza requisição PUT e atualiza contato com dados', () => {
       const id = 1;
 
       service.update(id, mockContato).subscribe((contact) => {
@@ -179,7 +180,7 @@ describe('ContactService', () => {
   });
 
   describe('favoritar', () => {
-    it('should send PATCH request to favorite endpoint', () => {
+    it('Realiza requisição PATCH e favorita contato', () => {
       const id = 1;
 
       service.favoritar(id).subscribe((response) => {

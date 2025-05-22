@@ -90,7 +90,7 @@ class ContactControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(simpleContactDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.contatoEmail").value("igorviana@gmail.com"));
+                .andExpect(jsonPath("$.contatoNome").value("Igor Viana"));
     }
 
     @Test
@@ -134,6 +134,7 @@ class ContactControllerTest {
                 'n',
                 'n'
         );
+
         Mockito.when(contactService.inactivateContact(1L)).thenReturn(inactivatedContact);
 
         contactController.perform(patch("/api/contacts/1/inativar"))

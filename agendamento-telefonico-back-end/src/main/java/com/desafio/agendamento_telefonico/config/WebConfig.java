@@ -14,7 +14,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry){
-        System.out.println(frontLink);
         registry.addMapping("/api/contacts/**")
                 .allowedOrigins(frontLink)
                 .allowedMethods("GET","PUT","POST","PATCH","DELETE")

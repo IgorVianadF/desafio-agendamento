@@ -47,6 +47,7 @@ public class ContactService {
 
     public SimpleContactDTO inactivateContact(Long id){
             Contact contact = contactRepository.findById(id).orElseThrow(()-> new ContactNotFoundException("Contato não encontrado"));
+                contact.setContatoSnFavorito('n');
                 contact.setContatoSnAtivo(contact.getContatoSnAtivo()=='s'?'n':'s');
                 contactRepository.save(contact);
                 return toSimpleContactDto(contact);

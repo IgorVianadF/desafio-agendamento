@@ -58,6 +58,7 @@ export class ContactFormComponent {
       .getById(this.contatoId() as number)
       .subscribe((res) => this.ContatoForm.patchValue(res));
   }
+
   saveContact(): void {
     if (this.ContatoForm.invalid) {
       this.toastService.show('Algo errado', 'Preencha todos os campos');
@@ -102,7 +103,12 @@ export class ContactFormComponent {
             'Algo errado',
             'Número já existe na sua agenda'
           );
+          return;
         }
+        this.toastService.show(
+          'Algo errado',
+          'Algum erro inseperado ocorreu no servidor'
+        );
       },
       complete: () => {
         this.toastService.show('Sucesso', 'Contato criado com sucesso');
